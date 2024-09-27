@@ -100,6 +100,7 @@ export class CallGraphPanel {
 					<script nonce="${nonce}">
 						const graph = new CallGraph(document.querySelector("svg"), ${focusMode});
 						graph.activate();
+						exportSVG(); // Call exportSVG() after graph activation
 
 						panzoom(graph.svg, {
 							minZoom: 1,
@@ -118,24 +119,14 @@ export class CallGraphPanel {
 
 	saveSVG(svg: string) {
 		const writeData = Buffer.from(svg, 'utf8');
-
-		vscode.window.showSaveDialog({
-			saveLabel: "export",
-			filters: { 'Images': ['svg'] },
-		}).then((fileUri) => {
-			if (fileUri) {
-				try {
-					vscode.workspace.fs.writeFile(fileUri, writeData)
-						.then(() => {
-							console.log("File Saved");
-						}, (err : any) => {
-							vscode.window.showErrorMessage(`Error on writing file: ${err}`);
-						});
-				} catch (err) {
-					vscode.window.showErrorMessage(`Error on writing file: ${err}`);
-				}
-			}
-		});
+		const defaultPath = vscode.Uri.file('/Users/lx/PingCAP/svgSave/callgraph.svg');
+		vscode.workspace.fs.writeFile(defaultPath, writeData)
+			.then(() => {
+				console.log("File Saved");
+				vscode.window.showInformationMessage(`SVG saved to ${defaultPath.fsPath}`);
+			}, (err: any) => {
+				vscode.window.showErrorMessage(`Error on writing file: ${err}`);
+			});
 	}
 }
 
