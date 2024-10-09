@@ -119,7 +119,10 @@ export class CallGraphPanel {
 
 	saveSVG(svg: string) {
 		const writeData = Buffer.from(svg, 'utf8');
-		const defaultPath = vscode.Uri.file('/Users/lx/PingCAP/svgSave/callgraph.svg');
+		const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+		const fileName = `${timestamp}.svg`;
+		const defaultPath = vscode.Uri.file(`/Users/lx/PingCAP/svgSave/${fileName}`);
+	
 		vscode.workspace.fs.writeFile(defaultPath, writeData)
 			.then(() => {
 				console.log("File Saved");
